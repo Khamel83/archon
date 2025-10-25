@@ -1,25 +1,68 @@
-__pycache__
+# Environment variables
 .env
-.serena
-.claude/settings.local.json
-PRPs/local
-PRPs/completed/
-PRPs/stories/
-PRPs/reviews/
-/logs/
-.zed
-tmp/
-temp/
-UAT/
+.env.local
+.env.production
 
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+.npm
+.pytest_cache/
+
+# OS
 .DS_Store
+Thumbs.db
 
-# Local release notes testing
-release-notes-*.md
+# Build outputs
+dist/
+build/
+*.egg-info/
 
-# OOS (Open Operating System) - copied from OOS repo
-modules/
-compositions/
-bin/oos-*.sh
-bin/dev-gate.sh
-bin/claude-*.sh
+# Docker
+.dockerignore
+
+# Database
+*.db
+*.sqlite
+
+# Temporary files
+*.tmp
+*.temp
+
+# SSL certificates (auto-generated)
+*.pem
+*.crt
+*.key
+
+# Backup files
+*.backup.*
+*~
+
+# Runtime
+*.pid
+*.sock
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Local development
+.local/
