@@ -16,3 +16,10 @@ UAT/
 
 # Local release notes testing
 release-notes-*.md
+
+# OOS (Open Operating System) - copied from OOS repo
+modules/
+compositions/
+bin/oos-*.sh
+bin/dev-gate.sh
+bin/claude-*.sh

@@ -1,0 +1,38 @@
+name: Deployment Health Monitor
+
+on:
+  schedule:
+    # Check every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check Archon Deployment Health
+      run: |
+        echo "Checking Archon deployment health..."
+
+        # Check frontend
+        FRONTEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://archon.khamel.com || echo "000")
+
+        # Check backend
+        BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://archon.khamel.com/api/health || echo "000")
+
+        echo "Frontend status: $FRONTEND_STATUS"
+        echo "Backend status: $BACKEND_STATUS"
+
+        # Determine overall health
+        if [[ "$FRONTEND_STATUS" == "200" ]] && [[ "$BACKEND_STATUS" == "200" ]]; then
+          echo "✅ All systems operational"
+        else
+          echo "❌ Service issues detected"
+          echo "::warning::Service health check failed"
+        fi
+
+    - name: Notify on Failure
+      if: failure()
+      run: |
+        echo "Deployment health check failed!"
+        # Could add Slack, Discord, or email notifications here
