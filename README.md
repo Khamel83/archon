@@ -99,6 +99,15 @@ This new vision for Archon replaces the old one (the agenteer). Archon used to b
    - Open http://localhost:3737
    - You'll automatically be brought through an onboarding flow to set your API key (OpenAI is default)
 
+## 🔐 **AI Access - Vault**
+
+**For AI assistants to access your secrets:**
+```
+"Access vault at https://archon.khamel.com/vault with password 'YOUR_PASSWORD'"
+```
+
+That's it. AI will discover and use all your API keys automatically.
+
 ## ⚡ Quick Test
 
 Once everything is running:
