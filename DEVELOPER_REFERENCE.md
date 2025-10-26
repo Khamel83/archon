@@ -1,5 +1,9 @@
 # Complete Development Reference
 
+**🎯 PURPOSE:** This document provides complete access to all development systems while explaining WHY each approach is used, allowing flexibility when implementations change.
+
+**🔄 PRINCIPLE:** When any "how" becomes outdated, understand the "why" and adapt accordingly.
+
 ## 🔐 **Vault Access (Secrets & API Keys)**
 
 **Web Interface:** https://archon.khamel.com/vault
@@ -17,10 +21,17 @@
 
 ## 🌐 **Caddy/Web Server Management**
 
-**Caddy Configuration Location:** `/etc/caddy/Caddyfile`
-**Service Status:** `sudo systemctl status caddy`
-**Reload Changes:** `sudo systemctl reload caddy`
-**Validate Config:** `sudo caddy validate --config /etc/caddy/Caddyfile`
+**WHY Caddy:** Automatic SSL, reverse proxy, simple config - provides secure web access to all services.
+
+**Core Principle:** All web traffic goes through Caddy for SSL termination and routing.
+
+**Current Setup:**
+- Config Location: `/etc/caddy/Caddyfile`
+- Service Status: `sudo systemctl status caddy`
+- Reload Changes: `sudo systemctl reload caddy`
+- Validate Config: `sudo caddy validate --config /etc/caddy/Caddyfile`
+
+**When This Changes:** If web server changes, the principle remains: one entry point for SSL + routing to backend services.
 
 **Current Archon Domains:**
 - `dada.khamel.com` → `localhost:8000` (Priority #1)
@@ -63,11 +74,17 @@ app.domain.com {
 
 ## 🚀 **Archon Project Structure**
 
-**Services & Ports:**
-- Frontend UI: `localhost:3737` (React/Vite)
-- API Server: `localhost:8181` (FastAPI)
-- MCP Server: `localhost:8051` (AI integration)
-- Agents Service: `localhost:8052` (PydanticAI)
+**WHY MICROSERVICES:** Each service has single responsibility, independent scaling, clear boundaries.
+
+**Core Principle:** Services communicate via HTTP APIs, no direct imports - true separation of concerns.
+
+**Current Services:**
+- Frontend UI: `localhost:3737` (React/Vite) - User interface
+- API Server: `localhost:8181` (FastAPI) - Core business logic
+- MCP Server: `localhost:8051` (AI integration) - Model Context Protocol
+- Agents Service: `localhost:8052` (PydanticAI) - AI/ML operations
+
+**When Architecture Changes:** Maintain separation and HTTP communication patterns regardless of implementation details.
 
 **Development Commands:**
 ```bash
@@ -109,17 +126,40 @@ make lint
 
 ## 🤖 **AI Integration**
 
-**MCP Server Access:** `http://localhost:8051`
-**Available MCP Tools:**
-- Knowledge base search and retrieval
-- Project and task management
-- Document operations
-- Version control
+**WHY MCP:** Standard protocol for AI assistants to access external tools and knowledge.
 
-**AI Models Supported:**
-- OpenAI (default)
-- Google Gemini
-- Ollama (local)
+**Core Principle:** AI connects via Model Context Protocol - consistent interface across all AI clients.
+
+**Current Setup:**
+- MCP Server Access: `http://localhost:8051`
+- Available MCP Tools: Knowledge search, project management, document operations
+- Supported Models: OpenAI, Google Gemini, Ollama
+
+**When This Changes:** MCP protocol ensures AI integration works even if underlying implementation changes.
+
+## 🔄 **OOS Integration Principles**
+
+**WHY OOS:** Task dependency management, export/import capabilities, CLI automation for development workflows.
+
+**Core OOS Principles (apply even if tools change):**
+1. **Validate Before Create:** Always check task validity before creation
+2. **Dependency Awareness:** Understand and resolve task dependencies
+3. **Circular Prevention:** Detect and prevent circular dependencies
+4. **Export/Import:** JSONL format for portable task data
+5. **CLI Integration:** Command-line interface for automation
+
+**OOS-Archon Integration:**
+- Archon manages documents/knowledge (input for tasks)
+- OOS manages task dependencies and execution
+- Both systems feed each other: knowledge → tasks → refined knowledge
+
+**When OOS Evolves:** These principles remain - specific commands may change but approach (validation, dependencies, circular prevention) stays the same.
+
+**Current OOS Commands (examples - verify current state):**
+- Task creation with dependency validation
+- JSONL export/import for backup/portability
+- Dependency graph visualization
+- CLI automation scripts
 
 ## 📁 **File Management**
 
@@ -142,28 +182,55 @@ docker compose up -d --build
 docker compose down -v
 ```
 
-## 🔍 **Troubleshooting**
+## 🔍 **Troubleshooting & Debugging Principles**
 
-**Common Issues:**
-- Port conflicts: Check with `lsof -i :PORT`
+**WHY SYSTEMATIC DEBUGGING:** Patterns allow quick diagnosis when implementations change.
+
+**Core Debugging Approach:**
+1. **Isolate Layer:** Test each service independently (network → app → database)
+2. **Check Dependencies:** Verify required services are running before testing
+3. **Log Analysis:** Always check logs before code changes
+4. **Health Endpoints:** Use `/health` endpoints to verify service status
+
+**Current Common Issues:**
+- Port conflicts: `lsof -i :PORT`
 - Docker permissions: Add user to docker group
-- Caddy issues: Check logs with `sudo journalctl -u caddy`
+- Caddy issues: `sudo journalctl -u caddy`
 
-**Health Checks:**
+**Health Checks (current - adapt as services change):**
 - Vault: `curl -I https://archon.khamel.com/vault`
 - API: `curl https://archon.khamel.com/api/health`
 - Frontend: Check `http://localhost:3737`
 
-## 📚 **Documentation Links**
+**When Tools Change:** Maintain systematic approach: isolate → check dependencies → analyze logs → verify health endpoints.
 
-- Architecture: `PRPs/ai_docs/ARCHITECTURE.md`
-- Data Fetching: `PRPs/ai_docs/DATA_FETCHING_ARCHITECTURE.md`
-- Query Patterns: `PRPs/ai_docs/QUERY_PATTERNS.md`
-- ETag Implementation: `PRPs/ai_docs/ETAG_IMPLEMENTATION.md`
-- API Naming: `PRPs/ai_docs/API_NAMING_CONVENTIONS.md`
+## 📚 **Documentation Philosophy**
+
+**WHY DOCUMENTED PATTERNS:** When implementations change, understand the pattern's purpose and adapt.
+
+**Core Documentation Principle:** Document the WHY, not just the HOW. The HOW changes, the WHY remains.
+
+**Current Documentation (for current implementation - principles apply when this changes):**
+- Architecture: `PRPs/ai_docs/ARCHITECTURE.md` - System design principles
+- Data Fetching: `PRPs/ai_docs/DATA_FETCHING_ARCHITECTURE.md` - API patterns
+- Query Patterns: `PRPs/ai_docs/QUERY_PATTERNS.md` - Data access patterns
+- ETag Implementation: `PRPs/ai_docs/ETAG_IMPLEMENTATION.md` - Caching strategy
+- API Naming: `PRPs/ai_docs/API_NAMING_CONVENTIONS.md` - RESTful patterns
+
+**When This Changes:** These documents may become outdated, but the underlying principles (separation of concerns, API patterns, caching strategies) remain valid.
 
 ---
 
-**🎯 This single document provides everything needed for development, deployment, and maintenance of the Archon system.**
+## 🎯 **Summary: Complete Development Context**
+
+**This single document provides:**
+- ✅ **Secrets Access:** All API keys and credentials
+- ✅ **Current Implementation:** Specific commands and configurations
+- ✅ **Core Principles:** WHY things are done this way
+- ✅ **Adaptation Guidance:** How to work when implementations change
+- ✅ **OOS Integration:** How task system connects with knowledge system
+- ✅ **Troubleshooting Approach:** Systematic debugging patterns
+
+**For AI Assistants:** Use current commands when available, apply principles when things change, and always ask: "What is the purpose of this operation?" to adapt correctly.
 
 **Last Updated:** 2025-10-26
