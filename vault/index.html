@@ -252,8 +252,29 @@
         <div id="vaultScreen" class="vault-screen">
             <div id="statusMessage"></div>
 
+            <!-- Change Password Form -->
+            <div class="add-secret-form" id="changePasswordForm" style="display: none;">
+                <h3><span class="emoji-icon">🔑</span>Change Master Password</h3>
+                <div class="input-group">
+                    <label for="currentPassword">Current Password</label>
+                    <input type="password" id="currentPassword" placeholder="Enter current master password">
+                </div>
+                <div class="input-group">
+                    <label for="newMasterPassword">New Master Password</label>
+                    <input type="password" id="newMasterPassword" placeholder="Enter new strong master password">
+                </div>
+                <div class="input-group">
+                    <label for="confirmMasterPassword">Confirm New Password</label>
+                    <input type="password" id="confirmMasterPassword" placeholder="Confirm new master password">
+                </div>
+                <div class="form-row">
+                    <button class="btn" onclick="changeMasterPassword()">🔄 Change Password</button>
+                    <button class="btn secondary" onclick="clearPasswordForm()">❌ Cancel</button>
+                </div>
+            </div>
+
             <!-- Add Secret Form -->
-            <div class="add-secret-form">
+            <div class="add-secret-form" id="addSecretForm">
                 <h3><span class="emoji-icon">➕</span>Add Secret</h3>
                 <div class="input-group">
                     <label for="newKey">Key Name</label>
@@ -273,7 +294,10 @@
             <div class="secrets-container">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h3><span class="emoji-icon">🔑</span>Stored Secrets</h3>
-                    <button class="btn secondary" onclick="refreshVault()" style="width: auto; padding: 8px 16px; font-size: 14px;">🔄 Refresh</button>
+                    <div>
+                        <button class="btn secondary" onclick="toggleChangePassword()" style="width: auto; padding: 6px 12px; font-size: 12px; margin-right: 10px;">🔑 Change Password</button>
+                        <button class="btn secondary" onclick="refreshVault()" style="width: auto; padding: 8px 16px; font-size: 14px;">🔄 Refresh</button>
+                    </div>
                 </div>
                 <div id="secretsList"></div>
             </div>
@@ -434,6 +458,7 @@
             document.getElementById('instructions').style.display = 'block';
             document.getElementById('unlockPassword').value = '';
             document.getElementById('secretsList').innerHTML = '';
+            document.getElementById('changePasswordForm').style.display = 'none';
         }
 
         function copyToClipboard(text) {
@@ -442,6 +467,68 @@
             }).catch(() => {
                 showStatus('❌ Failed to copy', 'error');
             });
+        }
+
+        function toggleChangePassword() {
+            const form = document.getElementById('changePasswordForm');
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+                document.getElementById('addSecretForm').style.display = 'none';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+
+        function clearPasswordForm() {
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newMasterPassword').value = '';
+            document.getElementById('confirmMasterPassword').value = '';
+        }
+
+        async function changeMasterPassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newMasterPassword').value;
+            const confirmPassword = document.getElementById('confirmMasterPassword').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showStatus('❌ Please fill in all password fields', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showStatus('❌ New passwords do not match', 'error');
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                showStatus('❌ New password must be at least 8 characters', 'error');
+                return;
+            }
+
+            try {
+                // First unlock with current password
+                const unlockResult = await apiCall('/unlock', { password: currentPassword });
+
+                // Re-encrypt all secrets with new password
+                const saveResult = await apiCall('/save', {
+                    password: newPassword,
+                    secrets: unlockResult.secrets
+                });
+
+                // Update current state
+                currentPassword = newPassword;
+                currentSecrets = unlockResult.secrets;
+
+                // Clear form and show success
+                clearPasswordForm();
+                document.getElementById('changePasswordForm').style.display = 'none';
+                document.getElementById('addSecretForm').style.display = 'block';
+
+                showStatus('✅ Master password changed successfully!', 'success');
+                displaySecrets();
+            } catch (error) {
+                showStatus('❌ Current password is incorrect', 'error');
+            }
         }
 
         // Keyboard shortcuts
