@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Secret Vault - Encrypted Key Storage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 90%;
+            padding: 40px;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2em;
+        }
+
+        .emoji-icon {
+            font-size: 1.5em;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.secondary {
+            background: #e1e8ed;
+            color: #333;
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .secrets-container {
+            margin-top: 30px;
+            border-top: 2px solid #e1e8ed;
+            padding-top: 20px;
+        }
+
+        .secret-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .secret-key {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .secret-value {
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #e1e8ed;
+            word-break: break-all;
+            font-size: 13px;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .unlock-screen {
+            text-align: center;
+        }
+
+        .vault-screen {
+            display: none;
+        }
+
+        .add-secret-form {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 480px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="emoji-icon">🔐</span>Secret Vault</h1>
+
+        <div id="instructions" class="instructions">
+            <strong>🚨 Important:</strong> This vault uses strong encryption with your password.
+            If you forget your password, ALL data will be permanently lost.
+            There is NO password recovery option.
+        </div>
+
+        <!-- Unlock Screen -->
+        <div id="unlockScreen" class="unlock-screen">
+            <div class="input-group">
+                <label for="unlockPassword">🔑 Password</label>
+                <input type="password" id="unlockPassword" placeholder="Enter your master password" onkeypress="if(event.key === 'Enter') unlockVault()">
+            </div>
+            <button class="btn" onclick="unlockVault()">🔓 Unlock Vault</button>
+        </div>
+
+        <!-- Vault Screen -->
+        <div id="vaultScreen" class="vault-screen">
+            <div id="statusMessage"></div>
+
+            <!-- Add Secret Form -->
+            <div class="add-secret-form">
+                <h3><span class="emoji-icon">➕</span>Add Secret</h3>
+                <div class="input-group">
+                    <label for="newKey">Key Name</label>
+                    <input type="text" id="newKey" placeholder="e.g., OPENAI_API_KEY">
+                </div>
+                <div class="input-group">
+                    <label for="newValue">Secret Value</label>
+                    <textarea id="newValue" placeholder="Paste your secret key or value here"></textarea>
+                </div>
+                <div class="form-row">
+                    <button class="btn" onclick="addSecret()">💾 Save Secret</button>
+                    <button class="btn secondary" onclick="clearForm()">🔄 Clear Form</button>
+                </div>
+            </div>
+
+            <!-- Secrets Display -->
+            <div class="secrets-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3><span class="emoji-icon">🔑</span>Stored Secrets</h3>
+                    <button class="btn secondary" onclick="refreshVault()" style="width: auto; padding: 8px 16px; font-size: 14px;">🔄 Refresh</button>
+                </div>
+                <div id="secretsList"></div>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn danger" onclick="lockVault()">🔒 Lock Vault</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPassword = '';
+        let currentSecrets = {};
+
+        // Utility functions
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        async function apiCall(endpoint, data) {
+            try {
+                const response = await fetch(`/api/vault${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.detail || 'API call failed');
+                }
+
+                return result;
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+
+        // Vault operations
+        async function unlockVault() {
+            const password = document.getElementById('unlockPassword').value;
+            if (!password) {
+                showStatus('❌ Please enter a password', 'error');
+                return;
+            }
+
+            try {
+                const result = await apiCall('/unlock', { password });
+                currentPassword = password;
+                currentSecrets = result.secrets;
+
+                document.getElementById('unlockScreen').style.display = 'none';
+                document.getElementById('vaultScreen').style.display = 'block';
+                document.getElementById('instructions').style.display = 'none';
+
+                displaySecrets();
+                showStatus(`✅ Vault unlocked! Found ${result.count} secrets`, 'success');
+            } catch (error) {
+                showStatus('❌ Invalid password or vault corrupted', 'error');
+            }
+        }
+
+        async function addSecret() {
+            const key = document.getElementById('newKey').value.trim();
+            const value = document.getElementById('newValue').value.trim();
+
+            if (!key || !value) {
+                showStatus('❌ Please enter both key and value', 'error');
+                return;
+            }
+
+            try {
+                await apiCall('/update', {
+                    password: currentPassword,
+                    key: key,
+                    value: value
+                });
+
+                currentSecrets[key] = value;
+                displaySecrets();
+                clearForm();
+                showStatus(`✅ Secret '${key}' saved successfully`, 'success');
+            } catch (error) {
+                // Error already shown by apiCall
+            }
+        }
+
+        async function deleteSecret(key) {
+            if (!confirm(`Are you sure you want to delete '${key}'?`)) {
+                return;
+            }
+
+            try {
+                await apiCall('/delete', {
+                    password: currentPassword,
+                    key: key
+                });
+
+                delete currentSecrets[key];
+                displaySecrets();
+                showStatus(`✅ Secret '${key}' deleted`, 'success');
+            } catch (error) {
+                // Error already shown by apiCall
+            }
+        }
+
+        async function refreshVault() {
+            try {
+                const result = await apiCall('/unlock', { password: currentPassword });
+                currentSecrets = result.secrets;
+                displaySecrets();
+                showStatus('✅ Vault refreshed', 'success');
+            } catch (error) {
+                showStatus('❌ Failed to refresh vault', 'error');
+            }
+        }
+
+        function displaySecrets() {
+            const container = document.getElementById('secretsList');
+
+            if (Object.keys(currentSecrets).length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #666; padding: 40px;">No secrets stored yet</div>';
+                return;
+            }
+
+            container.innerHTML = Object.entries(currentSecrets).map(([key, value]) => `
+                <div class="secret-item">
+                    <div class="secret-key">${key}</div>
+                    <div class="secret-value" style="position: relative;">
+                        ${value}
+                        <button class="copy-btn" onclick="copyToClipboard('${value}')">📋 Copy</button>
+                    </div>
+                    <button class="btn danger" onclick="deleteSecret('${key}')" style="width: auto; padding: 6px 12px; font-size: 12px; margin-top: 10px;">🗑️ Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function clearForm() {
+            document.getElementById('newKey').value = '';
+            document.getElementById('newValue').value = '';
+        }
+
+        function lockVault() {
+            currentPassword = '';
+            currentSecrets = {};
+            document.getElementById('unlockScreen').style.display = 'block';
+            document.getElementById('vaultScreen').style.display = 'none';
+            document.getElementById('instructions').style.display = 'block';
+            document.getElementById('unlockPassword').value = '';
+            document.getElementById('secretsList').innerHTML = '';
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showStatus('✅ Copied to clipboard', 'success');
+            }).catch(() => {
+                showStatus('❌ Failed to copy', 'error');
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'l') {
+                e.preventDefault();
+                if (currentPassword) {
+                    lockVault();
+                }
+            }
+        });
+
+        // Initialize
+        document.getElementById('unlockPassword').focus();
+    </script>
+</body>
+</html>
