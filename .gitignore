@@ -66,3 +66,11 @@ htmlcov/
 
 # Local development
 .local/
+
+# Vault - SECURITY CRITICAL - NEVER COMMIT
+vault/
+encrypted_secrets.vault
+salt.key
+YOUR_SECRETS.env
+VAULT_SECRETS.env
+*secrets*.env

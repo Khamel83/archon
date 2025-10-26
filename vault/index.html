@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔐 Secret Vault - Encrypted Key Storage</title>
+    <title>Archon Secret Vault</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -21,528 +21,407 @@
             color: #333;
         }
 
-        .container {
+        .vault-container {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 90%;
             padding: 40px;
-            margin: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .vault-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .vault-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
         }
 
         h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #2c3e50;
-            font-size: 2em;
+            color: #4a5568;
+            font-size: 24px;
+            margin-bottom: 10px;
         }
 
-        .emoji-icon {
-            font-size: 1.5em;
-            vertical-align: middle;
-            margin-right: 10px;
+        .subtitle {
+            color: #718096;
+            font-size: 14px;
         }
 
-        .input-group {
+        .form-group {
             margin-bottom: 20px;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
+            color: #4a5568;
+            font-weight: 500;
         }
 
-        input, textarea {
+        input[type="password"] {
             width: 100%;
             padding: 12px 16px;
-            border: 2px solid #e1e8ed;
+            border: 2px solid #e2e8f0;
             border-radius: 10px;
             font-size: 16px;
             transition: all 0.3s ease;
-            font-family: inherit;
+            background: rgba(255, 255, 255, 0.8);
         }
 
-        input:focus, textarea:focus {
+        input[type="password"]:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
         .btn {
+            width: 100%;
+            padding: 14px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-bottom: 10px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn.secondary {
-            background: #e1e8ed;
-            color: #333;
-        }
-
-        .btn.danger {
-            background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
 
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
+        }
+
+        .error {
+            background: rgba(245, 101, 101, 0.1);
+            border: 2px solid #f56565;
+            color: #c53030;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success {
+            background: rgba(72, 187, 120, 0.1);
+            border: 2px solid #48bb78;
+            color: #2f855a;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
         }
 
         .secrets-container {
-            margin-top: 30px;
-            border-top: 2px solid #e1e8ed;
-            padding-top: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
         }
 
         .secret-item {
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: rgba(237, 242, 247, 0.8);
             padding: 15px;
-            margin-bottom: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
             border-left: 4px solid #667eea;
         }
 
         .secret-key {
             font-weight: 600;
-            color: #2c3e50;
+            color: #2d3748;
             margin-bottom: 5px;
-            font-size: 14px;
+            word-break: break-all;
         }
 
         .secret-value {
+            color: #4a5568;
             font-family: 'Courier New', monospace;
-            background: white;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #e1e8ed;
+            font-size: 12px;
             word-break: break-all;
-            font-size: 13px;
-            position: relative;
-        }
-
-        .copy-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #667eea;
-            color: white;
-            border: none;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px;
             border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 11px;
-            cursor: pointer;
+            border: 1px solid #e2e8f0;
         }
 
-        .status {
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .loading {
             text-align: center;
-            font-weight: 500;
+            color: #718096;
+            margin: 20px 0;
         }
 
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .status.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        .hidden {
+        .change-password-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
             display: none;
         }
 
-        .unlock-screen {
-            text-align: center;
-        }
-
-        .vault-screen {
-            display: none;
-        }
-
-        .add-secret-form {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-row {
+        .password-inputs {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
+            margin-bottom: 15px;
         }
 
         @media (max-width: 480px) {
-            .form-row {
+            .password-inputs {
                 grid-template-columns: 1fr;
             }
         }
 
-        .instructions {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            line-height: 1.5;
+        .btn-secondary {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1><span class="emoji-icon">🔐</span>Secret Vault</h1>
-
-        <div id="instructions" class="instructions">
-            <strong>🚨 Important:</strong> This vault uses strong encryption with your password.
-            If you forget your password, ALL data will be permanently lost.
-            There is NO password recovery option.
+    <div class="vault-container">
+        <div class="vault-header">
+            <div class="vault-icon">🔐</div>
+            <h1>Archon Secret Vault</h1>
+            <p class="subtitle">Secure Password-Protected Secrets</p>
         </div>
 
-        <!-- Unlock Screen -->
-        <div id="unlockScreen" class="unlock-screen">
-            <div class="input-group">
-                <label for="unlockPassword">🔑 Password</label>
-                <input type="password" id="unlockPassword" placeholder="Enter your master password" onkeypress="if(event.key === 'Enter') unlockVault()">
+        <div id="error" class="error"></div>
+        <div id="success" class="success"></div>
+
+        <!-- Login Form -->
+        <div id="loginForm">
+            <div class="form-group">
+                <label for="password">Master Password:</label>
+                <input type="password" id="password" placeholder="Enter your master password" autocomplete="current-password">
             </div>
             <button class="btn" onclick="unlockVault()">🔓 Unlock Vault</button>
         </div>
 
-        <!-- Vault Screen -->
-        <div id="vaultScreen" class="vault-screen">
-            <div id="statusMessage"></div>
+        <!-- Secrets Display -->
+        <div id="secretsContainer" class="secrets-container">
+            <h3 style="margin-bottom: 15px; color: #4a5568;">🔑 Your Secrets</h3>
+            <div id="secretsList"></div>
+        </div>
 
-            <!-- Change Password Form -->
-            <div class="add-secret-form" id="changePasswordForm" style="display: none;">
-                <h3><span class="emoji-icon">🔑</span>Change Master Password</h3>
-                <div class="input-group">
-                    <label for="currentPassword">Current Password</label>
-                    <input type="password" id="currentPassword" placeholder="Enter current master password">
+        <!-- Change Password Section -->
+        <div id="changePasswordSection" class="change-password-section">
+            <h3 style="margin-bottom: 15px; color: #4a5568;">🔄 Change Master Password</h3>
+            <div class="password-inputs">
+                <div class="form-group">
+                    <label for="newPassword">New Password:</label>
+                    <input type="password" id="newPassword" placeholder="Enter new password">
                 </div>
-                <div class="input-group">
-                    <label for="newMasterPassword">New Master Password</label>
-                    <input type="password" id="newMasterPassword" placeholder="Enter new strong master password">
-                </div>
-                <div class="input-group">
-                    <label for="confirmMasterPassword">Confirm New Password</label>
-                    <input type="password" id="confirmMasterPassword" placeholder="Confirm new master password">
-                </div>
-                <div class="form-row">
-                    <button class="btn" onclick="changeMasterPassword()">🔄 Change Password</button>
-                    <button class="btn secondary" onclick="clearPasswordForm()">❌ Cancel</button>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password:</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm new password">
                 </div>
             </div>
+            <button class="btn btn-secondary" onclick="changePassword()">🔐 Change Password</button>
+            <button class="btn logout-btn" onclick="logout()">🚪 Logout</button>
+        </div>
 
-            <!-- Add Secret Form -->
-            <div class="add-secret-form" id="addSecretForm">
-                <h3><span class="emoji-icon">➕</span>Add Secret</h3>
-                <div class="input-group">
-                    <label for="newKey">Key Name</label>
-                    <input type="text" id="newKey" placeholder="e.g., OPENAI_API_KEY">
-                </div>
-                <div class="input-group">
-                    <label for="newValue">Secret Value</label>
-                    <textarea id="newValue" placeholder="Paste your secret key or value here"></textarea>
-                </div>
-                <div class="form-row">
-                    <button class="btn" onclick="addSecret()">💾 Save Secret</button>
-                    <button class="btn secondary" onclick="clearForm()">🔄 Clear Form</button>
-                </div>
-            </div>
-
-            <!-- Secrets Display -->
-            <div class="secrets-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3><span class="emoji-icon">🔑</span>Stored Secrets</h3>
-                    <div>
-                        <button class="btn secondary" onclick="toggleChangePassword()" style="width: auto; padding: 6px 12px; font-size: 12px; margin-right: 10px;">🔑 Change Password</button>
-                        <button class="btn secondary" onclick="refreshVault()" style="width: auto; padding: 8px 16px; font-size: 14px;">🔄 Refresh</button>
-                    </div>
-                </div>
-                <div id="secretsList"></div>
-            </div>
-
-            <div style="margin-top: 30px; text-align: center;">
-                <button class="btn danger" onclick="lockVault()">🔒 Lock Vault</button>
-            </div>
+        <div id="loading" class="loading" style="display: none;">
+            <div>🔄 Processing...</div>
         </div>
     </div>
 
     <script>
+        const API_BASE = '/api/vault';
         let currentPassword = '';
-        let currentSecrets = {};
 
-        // Utility functions
-        function showStatus(message, type = 'info') {
-            const statusDiv = document.getElementById('statusMessage');
-            statusDiv.className = `status ${type}`;
-            statusDiv.textContent = message;
-            statusDiv.style.display = 'block';
-            setTimeout(() => {
-                statusDiv.style.display = 'none';
-            }, 5000);
+        function show(element) {
+            element.style.display = 'block';
         }
 
-        async function apiCall(endpoint, data) {
+        function hide(element) {
+            element.style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('error');
+            errorEl.textContent = '❌ ' + message;
+            show(errorEl);
+            hide(document.getElementById('success'));
+        }
+
+        function showSuccess(message) {
+            const successEl = document.getElementById('success');
+            successEl.textContent = '✅ ' + message;
+            show(successEl);
+            hide(document.getElementById('error'));
+        }
+
+        function setLoading(loading) {
+            const loadingEl = document.getElementById('loading');
+            loadingEl.style.display = loading ? 'block' : 'none';
+        }
+
+        async function unlockVault() {
+            const password = document.getElementById('password').value;
+            if (!password) {
+                showError('Please enter your password');
+                return;
+            }
+
+            setLoading(true);
+            hide(document.getElementById('error'));
+            hide(document.getElementById('success'));
+
             try {
-                const response = await fetch(`/api/vault${endpoint}`, {
+                const response = await fetch(API_BASE + '/unlock', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({ password })
                 });
 
-                const result = await response.json();
+                const data = await response.json();
 
-                if (!response.ok || !result.success) {
-                    throw new Error(result.detail || 'API call failed');
+                if (data.success) {
+                    currentPassword = password;
+                    showSuccess(`Vault unlocked! Found ${Object.keys(data.secrets || {}).length} secrets`);
+                    displaySecrets(data.secrets || {});
+                    hide(document.getElementById('loginForm'));
+                    show(document.getElementById('secretsContainer'));
+                    show(document.getElementById('changePasswordSection'));
+                } else {
+                    showError('Invalid password or vault corrupted');
                 }
-
-                return result;
             } catch (error) {
-                showStatus(`❌ Error: ${error.message}`, 'error');
-                throw error;
+                showError('Failed to connect to vault: ' + error.message);
+            } finally {
+                setLoading(false);
             }
         }
 
-        // Vault operations
-        async function unlockVault() {
-            const password = document.getElementById('unlockPassword').value;
-            if (!password) {
-                showStatus('❌ Please enter a password', 'error');
-                return;
-            }
+        function displaySecrets(secrets) {
+            const secretsList = document.getElementById('secretsList');
+            secretsList.innerHTML = '';
 
-            try {
-                const result = await apiCall('/unlock', { password });
-                currentPassword = password;
-                currentSecrets = result.secrets;
-
-                document.getElementById('unlockScreen').style.display = 'none';
-                document.getElementById('vaultScreen').style.display = 'block';
-                document.getElementById('instructions').style.display = 'none';
-
-                displaySecrets();
-                showStatus(`✅ Vault unlocked! Found ${result.count} secrets`, 'success');
-            } catch (error) {
-                showStatus('❌ Invalid password or vault corrupted', 'error');
-            }
-        }
-
-        async function addSecret() {
-            const key = document.getElementById('newKey').value.trim();
-            const value = document.getElementById('newValue').value.trim();
-
-            if (!key || !value) {
-                showStatus('❌ Please enter both key and value', 'error');
-                return;
-            }
-
-            try {
-                await apiCall('/update', {
-                    password: currentPassword,
-                    key: key,
-                    value: value
-                });
-
-                currentSecrets[key] = value;
-                displaySecrets();
-                clearForm();
-                showStatus(`✅ Secret '${key}' saved successfully`, 'success');
-            } catch (error) {
-                // Error already shown by apiCall
-            }
-        }
-
-        async function deleteSecret(key) {
-            if (!confirm(`Are you sure you want to delete '${key}'?`)) {
-                return;
-            }
-
-            try {
-                await apiCall('/delete', {
-                    password: currentPassword,
-                    key: key
-                });
-
-                delete currentSecrets[key];
-                displaySecrets();
-                showStatus(`✅ Secret '${key}' deleted`, 'success');
-            } catch (error) {
-                // Error already shown by apiCall
-            }
-        }
-
-        async function refreshVault() {
-            try {
-                const result = await apiCall('/unlock', { password: currentPassword });
-                currentSecrets = result.secrets;
-                displaySecrets();
-                showStatus('✅ Vault refreshed', 'success');
-            } catch (error) {
-                showStatus('❌ Failed to refresh vault', 'error');
-            }
-        }
-
-        function displaySecrets() {
-            const container = document.getElementById('secretsList');
-
-            if (Object.keys(currentSecrets).length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #666; padding: 40px;">No secrets stored yet</div>';
-                return;
-            }
-
-            container.innerHTML = Object.entries(currentSecrets).map(([key, value]) => `
-                <div class="secret-item">
-                    <div class="secret-key">${key}</div>
-                    <div class="secret-value" style="position: relative;">
-                        ${value}
-                        <button class="copy-btn" onclick="copyToClipboard('${value}')">📋 Copy</button>
-                    </div>
-                    <button class="btn danger" onclick="deleteSecret('${key}')" style="width: auto; padding: 6px 12px; font-size: 12px; margin-top: 10px;">🗑️ Delete</button>
-                </div>
-            `).join('');
-        }
-
-        function clearForm() {
-            document.getElementById('newKey').value = '';
-            document.getElementById('newValue').value = '';
-        }
-
-        function lockVault() {
-            currentPassword = '';
-            currentSecrets = {};
-            document.getElementById('unlockScreen').style.display = 'block';
-            document.getElementById('vaultScreen').style.display = 'none';
-            document.getElementById('instructions').style.display = 'block';
-            document.getElementById('unlockPassword').value = '';
-            document.getElementById('secretsList').innerHTML = '';
-            document.getElementById('changePasswordForm').style.display = 'none';
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showStatus('✅ Copied to clipboard', 'success');
-            }).catch(() => {
-                showStatus('❌ Failed to copy', 'error');
+            Object.entries(secrets).forEach(([key, value]) => {
+                const secretItem = document.createElement('div');
+                secretItem.className = 'secret-item';
+                secretItem.innerHTML = `
+                    <div class="secret-key">${escapeHtml(key)}</div>
+                    <div class="secret-value">${escapeHtml(value)}</div>
+                `;
+                secretsList.appendChild(secretItem);
             });
         }
 
-        function toggleChangePassword() {
-            const form = document.getElementById('changePasswordForm');
-            if (form.style.display === 'none' || form.style.display === '') {
-                form.style.display = 'block';
-                document.getElementById('addSecretForm').style.display = 'none';
-            } else {
-                form.style.display = 'none';
-            }
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
-        function clearPasswordForm() {
-            document.getElementById('currentPassword').value = '';
-            document.getElementById('newMasterPassword').value = '';
-            document.getElementById('confirmMasterPassword').value = '';
-        }
+        async function changePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
 
-        async function changeMasterPassword() {
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newMasterPassword').value;
-            const confirmPassword = document.getElementById('confirmMasterPassword').value;
-
-            if (!currentPassword || !newPassword || !confirmPassword) {
-                showStatus('❌ Please fill in all password fields', 'error');
+            if (!newPassword || !confirmPassword) {
+                showError('Please enter both new password and confirmation');
                 return;
             }
 
             if (newPassword !== confirmPassword) {
-                showStatus('❌ New passwords do not match', 'error');
+                showError('Passwords do not match');
                 return;
             }
 
             if (newPassword.length < 8) {
-                showStatus('❌ New password must be at least 8 characters', 'error');
+                showError('Password must be at least 8 characters');
                 return;
             }
 
-            try {
-                // First unlock with current password
-                const unlockResult = await apiCall('/unlock', { password: currentPassword });
+            setLoading(true);
 
-                // Re-encrypt all secrets with new password
-                const saveResult = await apiCall('/save', {
-                    password: newPassword,
-                    secrets: unlockResult.secrets
+            try {
+                // First get current secrets
+                const unlockResponse = await fetch(API_BASE + '/unlock', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ password: currentPassword })
                 });
 
-                // Update current state
-                currentPassword = newPassword;
-                currentSecrets = unlockResult.secrets;
+                const unlockData = await unlockResponse.json();
 
-                // Clear form and show success
-                clearPasswordForm();
-                document.getElementById('changePasswordForm').style.display = 'none';
-                document.getElementById('addSecretForm').style.display = 'block';
+                if (!unlockData.success) {
+                    showError('Failed to access current vault');
+                    setLoading(false);
+                    return;
+                }
 
-                showStatus('✅ Master password changed successfully!', 'success');
-                displaySecrets();
+                // Re-save with new password
+                const saveResponse = await fetch(API_BASE + '/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        password: newPassword,
+                        secrets: unlockData.secrets
+                    })
+                });
+
+                const saveData = await saveResponse.json();
+
+                if (saveData.success) {
+                    showSuccess('Password changed successfully! Please login with your new password.');
+                    currentPassword = newPassword;
+                    setTimeout(() => {
+                        logout();
+                    }, 2000);
+                } else {
+                    showError('Failed to change password');
+                }
             } catch (error) {
-                showStatus('❌ Current password is incorrect', 'error');
+                showError('Error changing password: ' + error.message);
+            } finally {
+                setLoading(false);
             }
         }
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'l') {
-                e.preventDefault();
-                if (currentPassword) {
-                    lockVault();
-                }
+        function logout() {
+            currentPassword = '';
+            document.getElementById('password').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            hide(document.getElementById('secretsContainer'));
+            hide(document.getElementById('changePasswordSection'));
+            hide(document.getElementById('success'));
+            hide(document.getElementById('error'));
+            show(document.getElementById('loginForm'));
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                unlockVault();
             }
         });
-
-        // Initialize
-        document.getElementById('unlockPassword').focus();
     </script>
 </body>
 </html>
