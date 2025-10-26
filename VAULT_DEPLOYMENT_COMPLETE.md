@@ -58,7 +58,32 @@ archon.khamel.com {
 3. View/change secrets as needed
 4. Change password via web interface
 
-### For Developers:
+### For AI Assistants:
+**SIMPLE INSTRUCTION PATTERN:**
+```
+"Access the vault at https://archon.khamel.com/vault with password 'YOUR_PASSWORD_HERE'"
+```
+
+**That's it!** The AI will:
+1. Visit the web interface
+2. Enter the provided password
+3. Automatically discover all available secrets
+4. Use them as needed for the task
+
+**AI Usage Example:**
+```
+User: "I need to deploy to production, here's my vault access:
+       https://archon.khamel.com/vault with password 'mySecretPass123'"
+
+AI: "✅ I've accessed your vault and found 23 secrets including:
+     - SUPABASE_URL and SUPABASE_SERVICE_KEY
+     - OPENROUTER_KEYS for AI services
+     - All other API keys and credentials
+
+     I can now use these for deployment..."
+```
+
+### For Developers (Advanced):
 1. Use API: `POST /api/vault/unlock` with password
 2. Store secrets: `POST /api/vault/save` with password + secrets
 3. All operations require master password
