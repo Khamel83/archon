@@ -105,12 +105,10 @@ This new vision for Archon replaces the old one (the agenteer). Archon used to b
 ```
 "Access vault at https://archon.khamel.com/vault with password 'YOUR_PASSWORD'
 
-For all Caddy/web instructions: https://raw.githubusercontent.com/Khamel83/archon/main/CADDY_INSTRUCTIONS_FOR_AI.md
-
-For everything else: https://github.com/Khamel83/oos/blob/master/AI_REFERENCE.md"
+For complete development reference: https://raw.githubusercontent.com/Khamel83/archon/main/DEVELOPER_REFERENCE.md"
 ```
 
-That's it. AI has complete access to vault, Caddy, and all other instructions.
+That's it. AI has complete access to all secrets and full development documentation.
 
 ## ⚡ Quick Test
 
