@@ -106,9 +106,13 @@ This new vision for Archon replaces the old one (the agenteer). Archon used to b
 "Access vault at https://archon.khamel.com/vault with password 'YOUR_PASSWORD'
 
 For complete development reference: https://raw.githubusercontent.com/Khamel83/archon/main/DEVELOPER_REFERENCE.md"
+
+For OOS integration (task system dependencies): https://raw.githubusercontent.com/Khamel83/archon/main/OOS_INTEGRATION_REFERENCE.md"
 ```
 
-That's it. AI has complete access to all secrets and full development documentation.
+**System Relationship:** Archon provides knowledge, secrets, and project management that OOS requires to function.
+
+That's it. AI has complete access to all systems and their integration dependencies.
 
 ## ⚡ Quick Test
 
