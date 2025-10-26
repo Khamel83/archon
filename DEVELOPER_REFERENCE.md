@@ -231,6 +231,28 @@ docker compose down -v
 - ✅ **OOS Integration:** How task system connects with knowledge system
 - ✅ **Troubleshooting Approach:** Systematic debugging patterns
 
+## 🔄 **OOS Integration - This System's Role**
+
+**WHY ARCHON FOR OOS:** Archon provides the foundational services that OOS requires - knowledge management, RAG, project management, and secure secret access.
+
+**Archon's Role in OOS Ecosystem:**
+1. **Knowledge Hub:** All task context and RAG capabilities
+2. **Secret Manager:** Secure vault for all credentials and API keys
+3. **Project System:** Task management and status tracking
+4. **MCP Provider:** AI tool integration for OOS operations
+5. **API Gateway:** Standardized interfaces for external systems
+
+**OOS Dependencies on Archon:**
+- Vault access for secrets and configuration
+- Knowledge API for task context and RAG
+- Projects API for task management
+- Documents API for information access
+- MCP server for AI assistant integration
+
+**When OOS Implements:** Always reference Archon endpoints first before adding external services.
+
 **For AI Assistants:** Use current commands when available, apply principles when things change, and always ask: "What is the purpose of this operation?" to adapt correctly.
+
+**OOS Integration Reference:** See `OOS_INTEGRATION_REFERENCE.md` for complete OOS-Archon dependency documentation.
 
 **Last Updated:** 2025-10-26
