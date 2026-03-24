@@ -2,8 +2,8 @@ name: Deployment Health Monitor
 
 on:
   schedule:
-    # Check every 5 minutes
-    - cron: '*/5 * * * *'
+    # Check once a day at noon UTC
+    - cron: '0 12 * * *'
   workflow_dispatch:
 
 jobs:
