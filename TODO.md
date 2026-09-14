@@ -1,6 +1,6 @@
 <!-- janitor:begin:todo -->
-- Maintain and update Homelab project contract
-- Review and refine oneshot framework integration
-- Monitor daily health check schedule and performance
-- Keep OOS principles and integration documentation up to date
+- Maintain and verify Homelab project contract definitions.
+- Keep oneshot framework artifacts (skills, agents, and `AGENTS.md`) in sync.
+- Monitor daily health check schedule updates.
+- Maintain AI access documentation, OOS integration systems, and secret vault configurations.
 <!-- janitor:end:todo -->
